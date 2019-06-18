@@ -1,0 +1,43 @@
+create table product50
+(
+pid varchar(20) primary key,
+pname varchar(20) not null,
+price int,
+discount int ,
+pcompany varchar(20) not null
+);
+create table customer50
+(
+cid varchar(20) primary key,
+cname varchar(20) not null,
+cadd varchar(20) not null, 
+ccity varchar(20) not null
+);
+create table order_detail50
+(
+oid varchar(20) ,
+pid varchar(20) ,
+cid varchar(20),
+odate date,
+qty int ,
+status varchar(20) ,
+primary key(oid,pid,cid)
+);
+insert into product50 values('P001','pendrive',700,5,'kingston'),('P005','dvd',20,2,'moserbear'),('P007','headfone',500,25,'intex'),('P009','modem',1500,10,'intex'),('P010','hard  disk',4500,7,'segnate'),('P012','speaker',1000,5,'creative'),('P101','ram',2000,6,'hynix');
+insert into customer50 values('C01','sonaal','dwarka','new delhi'),('C02','abhinav','mehrauli','new delhi'),('C03','abdul rauf','jamia hostel','new delhi'),('C05','insaan','jamia hostel','new delhi'),('C06','javed ahmed','allahabad','uttar pradesh'),('C07','deepak','borivali','mumbai'),('C08','minnet khan','allahabad','uttar pradesh');
+insert into order_detail50 values('O01','P001','C01','2015-07-23',2,'success'),('O01','P007','C01','2015-07-23',2,'success'),('O02','P010','C05','2015-08-28',5,'success'),('O02','P012','C05','2015-08-28',5,'success'),('O03','P005','C02','2015-08-31',20,'success'),('O04','P009','C06','2015-09-01',2,'success'),('O05','P010','C07','2015-09-02',1,'success'),('O06','P012','C02','2015-09-03',2,'pending'),('O07','P007','C06','2015-08-25',1,'failed');
+alter table order_detail50
+add foreign key(pid) references product50(pid)
+on update cascade on delete cascade;
+alter table order_detail50
+add foreign key(cid) references customer50(cid)
+on update cascade on delete cascade;
+
+2.select customer50.cid,cname,pname from order_detail50,customer50,product50 where order_detail50.status = 'success' and customer50.cid = order_detail50.cid and product50.pid = order_detail.pid;
+5.select *from product50 order by price desc limit 2,1 ;
+//3. select sum(quantity(price*discount/100))from product50  pd join as od where pid in (select pid from order_detail50 where pd.pid=od.qty);
+6.select *from customer50 where cid NOT IN (select cid from order_detail50 );
+8.select *from customer50 where cid IN(select cid from order_detail50 where qty >=2);
+4.select *from product50 where pid IN(select pid from order_detail50 group by(cid) having count(*)>1); 
+10.select customer50.cid,sum(qty) from customer,order_detail 
+7.select *from customer50 where cid IN (select cid from order_detail50 group by(pid) having count(*)  > 1);

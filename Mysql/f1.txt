@@ -1,0 +1,109 @@
+create table employee50
+(
+fname varchar(20) not null,
+minit varchar(20) not null,
+lname varchar(20) not null,
+ssn int primary key,
+bdate date,
+address varchar(50) not null,
+sex varchar(2) not null,
+salary int,
+super_ssn int,
+dno int 
+);
+create table department50
+(
+dname varchar(20)not null,
+dnumber int primary key,
+mgr_ssn int,
+mgr_start_date date 
+);
+create table dept_locations50
+(
+dnumber int,
+dlocation varchar(20) not null,
+primary key(dnumber,dlocation)
+);
+create table project50
+(
+pname varchar(20) not null,
+pnumber int primary key,
+plocation varchar(20) not null,
+dnum int
+);
+create table works_on50
+(
+essn int,
+pno int,
+hours decimal,
+primary key (essn,pno)
+);
+create table dependent50
+(
+essn int,
+dependent_name varchar(20) not null,
+sex varchar(20) not null,
+bdate date ,
+relationship varchar(20) not null,
+primary key(essn,dependent_name)
+);
+insert into employee50 values('john','B','smith',123456789,'1965-01-09','731:foundren houston','M',30000,333445555,5),('franklin','T','wong',333445555,'1955-12-08','539:voss houston','M',40000,888665555,5),('alicia','J','zoloya',999887777,'1968-01-19','3321:cestle spring','F',25000,987654321,4),('jennifer','S','wellace',987654321,'1941-06-20','290:berry bellare','F',43000,888665555,4),('ramesh','K','narayan',666884444,'1962-09-15','975:fire oak houston','M',38000,333445555,5),('joyce','A','english',453453453,'1972-07-31','5631:rice houston','F',25000,333445555,5),('ahmad','V','jabbar',987987987,'1969-03-29','960:dalias houston','M',25000,987654321,4),('james','E','borg',888665555,'1937-11-10','450:stone houston','M',55000,NULL,1);
+
+insert into department50 values('research',5,333445555,'1988-05-22'),('administration',4,987654321,'1995-01-01'),('headquarters',1,888665555,'1981-06-19');
+
+insert into dept_locations50 values(1,'houston'),(4,'stafford'),(5,'bellare'),(5,'sugarland'),(5,'houston');
+
+insert into project50 values('productx',1,'bellare',5),('producty',2,'sugarland',5),('productz',3,'houston',5),('computerization',10,'stafford',4),('reorganisation',20,'houston',1),('newbenefits',30,'stafford',4);
+
+insert into works_on50 values(123456789,1,32.5),(123456789,2,75.0),(666884444,3,40.0),(453453453,1,20.0),(453453453,2,20.0),(333445555,2,10.0),(333445555,3,10.0),(333445555,10,10.0),(333445555,20,10.0),(999887777,30,30.0),(999887777,10,10.0),(987987987,10,35.0),(987987987,30,5.0),(987654321,30,20.0),(987654321,20,15.0),(888665555,20,NULL);
+
+insert into dependent50 values(333445555,'alice','F','1986-04-05','daughter'),(333445555,'theodore','M','1983-10-25','son'),(333445555,'joy','F','1958-05-03','spouse'),(987654321,'abner','M','1942-02-28','spouse'),(123456789,'michael','M','1988-01-04','son'),(123456789,'alice','F','1988-12-30','daughter'),(123456789,'elizabeth','F','1967-05-05','spouse');
+
+
+alter table department50
+add foreign key department50(mgr_ssn) references employee50(ssn)
+on update cascade on delete cascade;
+
+alter table works_on50
+add foreign key works_on50(essn) references employee50(ssn)
+on update cascade on delete cascade;
+
+alter table dependent50
+add foreign key dependent50(essn) references employee50(ssn)
+on update cascade on delete cascade;
+
+alter table dept_locations50
+add foreign key dept_locations50(dnumber) references department50(dnumber)
+on update cascade on delete cascade;
+
+alter table project50
+add foreign key project50(dnum) references department50(dnumber)
+on update cascade on delete cascade;
+
+alter table employee50
+add foreign key employee50(dno) references department50(dnumber)
+on update cascade on delete cascade;
+
+alter table works_on50
+add foreign key works_on50(pno) references project50(pnumber)
+on update cascade on delete cascade;
+
+a. select fname,bdate,address from employee where fname='john' and minit='B' and lname='smith';
+b. select fname,minit,lname from employee50 where dno IN(select dnumber from department where dname='administration');
+c. select fname,minit,lname 
+from employee50, works_on50,project50
+where ssn=essn AND pno = pnumber AND
+dno = 5 AND hours > 10 AND
+pname ='ProductX';
+e.select fname,minit,lname from employee50 where dno IN(select dnumber from dept_locations50 where dlocation='houston');
+f.select fname, minit, lname
+from employee50, dependent50
+where fname = dependent_name AND
+ssn = essn; 
+g.select pname,count(*),sum(hours) from project50,employee50,works_on50 where pnumber=pno group by pnumber,pname  ; 
+h.select avg(salary)
+from employee50
+where sex = 'F'; 
+i. select dname,count(*) from department50,employee50 where dnumber=dno group by dname having avg(salary) >30000;
+
+

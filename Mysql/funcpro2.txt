@@ -1,0 +1,74 @@
+create table book50
+(
+bid int primary key,
+bname varchar(20) not null,
+pages int
+);
+create table author50
+(
+auid int primary key,
+auname varchar(20) not null,
+auqual varchar(20)
+);
+create table writtenby50
+(
+bid int,
+auid int
+);
+alter table writtenby50
+add foreign key(bid) references author(bid)
+on update cascade on delete cascade;
+alter table writtenby50
+add foreign key(auid) references author(auid)
+on update cascade on delete cascade;
+
+create procedure mybook50(IN bookid int,IN bookname varchar(20),IN bpages int)
+begin
+declare s varchar(40);
+declare z int default 0;
+set z=(select count(*) from book50 where bookid=bid);
+if z>0
+then 
+set s='book already present';
+select s;
+end if;
+if z=0
+then 
+insert into book50 values(bookid,bookname,bpages);
+end if;
+end
+
+create procedure wby50(IN bookid int,IN authid int)
+begin
+declare s varchar(40);
+declare z1 int default 0;
+declare z2 int default 0;
+set z1=(select count(*) from book50 where bookid=bid);
+set z2=(select count(*) from author50 where authid=auid);
+if z1=0 and z2 <> 0 
+then
+set s='book doesnot present but author present';
+select s;
+end if;
+
+if z2=0 and z1 <> 0
+then 
+set s='book present but author does not';
+select s;
+end if;
+if z1=0 and z2=0
+then
+set s='book and author both are absent';
+select s;
+end if;
+if z1 <> 0 and z2 <> 0
+then
+insert into writtenby50 values(bookid,authid);
+end if;
+end
+
+create procedure details50(IN bookid int,IN bname varchar(20),IN bpages int,IN authid int)
+begin
+call mybook50(bookid,bname,bpages);
+call wby50(bookid,authid);
+end

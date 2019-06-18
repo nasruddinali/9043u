@@ -1,0 +1,33 @@
+create function myfib50(n int) returns varchar(20)
+begin
+declare a int default 0;
+declare b int default 1;
+declare i int default 2;
+declare sum int default 1;
+declare c int default 0;
+declare s varchar(30);
+declare s1 varchar(20);
+set s = " ";
+set s1 = " ";
+set s=concat(s,a);
+set s=concat(s,s1);
+set s=concat(s,b);
+set s=concat(s,s1);
+myloop:loop
+if(i>n)
+then
+set s=concat(s,'sum=',sum);
+leave myloop;
+else
+set c= a+b;
+set s=concat(s,c);
+set s=concat(s,s1);
+set a=b;
+set b=c;
+set i=i+1;
+set sum=sum+c;
+iterate myloop;
+end if;
+end loop;
+return s;
+end

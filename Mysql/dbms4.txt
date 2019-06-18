@@ -1,0 +1,50 @@
+create table student(
+stud_no  int  primary key,
+stud_name varchar(20) not null,
+dob date,
+cid int
+);
+create table lab(
+mach_no varchar(20) primary key,
+lab_no int ,
+description varchar(50) not null
+);
+create table allotment
+(
+stud_no int ,
+mach_no varchar(20) ,
+doweek varchar(20) not null,
+primary key(stud_no,mach_no)
+);
+create table class
+(
+cid int primary key,
+cname varchar(20) not null,
+duration int )
+;
+insert  into student values(1,'asad','1996-01-05',1),(2,'atul kunwar','1998-01-25',2),(3,'aakash','1999-02-07',4),(4,'shoeb','2000-02-14',1),(5,'minnet khan','1997-03-21',4),(6,'varun bansal','1990-04-28',3),(7,'deepak sharma','1995-05-09',2),(8,'faizan','1994-11-11',3);
+insert into lab values('M1',11,'apple lab'),('M2',12,'sun lab'),('M3',14,'operating system lab'),('M4',11,'apple lab'),('M5',13,'dbms lab'),('M6',12,'sun lab'),('M7',14,'operating system lab'),('M8',13,'dbms lab');
+insert into allotment values(1,'M1','mon'),(2,'M5','thu'),(3,'M8','fri'),(4,'M5','tue'),(5,'M1','fri'),(6,'M5','mon'),(7,'M3','wed'),(8,'M4','mon');
+insert into class values(1,'B.tech CS',4),(2,'B.tech EC',4),(3,'B.sc',3),(4,'B.A',2);
+alter table student
+add foreign key(cid) references class(cid)
+on update cascade on delete cascade;
+alter table allotment
+add foreign key(mach_no) references lab(mach_no)
+on update cascade on delete cascade;
+alter table allotmentadd foreign key(stud_no) references student(stud_no)
+on update cascade on delete cascade;
+1.select stud_name,allotment.mach_no,lab_no from student,allotment,lab where student.stud_no=allotment.stud_no and  lab.mach_no=allotment.mach_no;
+
+3.select count(mach_no) from allotment where stud_no in (select stud_no from student where cid=(select cid from class where cname = 'B.tech CS' ) );  
+OR 3. select c.cname ,count(*) from student as s join allotment as a join class as c on s.stud_no=a.stud_no and s.cid=c.cid group by cname;
+
+last 2. select student.stud_no,stud_name,student.cid,cname,allotment.mach_no,lab_no from student,class,allotment,lab where student.stud_no=allotment.stud_no and student.cid=class.cid and allotment.mach_no=lab.mach_no order by dob desc limit 0,1;
+
+ last . select mach_no,count(*) from allotment group by mach_no having count(*) >= 2;
+
+last 3. select l.lab_no,l.description,count(8) from lab as l,allotment as a where l.mach_no=a.mach_no group by l.description;
+
+select doweek,count(mach_no) from allotment group by doweek;
+
+

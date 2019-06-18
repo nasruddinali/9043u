@@ -1,0 +1,44 @@
+create table employee50
+(
+empno int primary key,
+name varchar(20) not null,
+deptno int ,
+dob date,
+city varchar(20) not null,
+phone int
+);
+create table department50 
+(
+deptno int primary key,
+dname varchar(20) not null,
+manager varchar(20) not null
+);
+create table salary50
+(
+eno int primary key,
+basic int,
+deptno int,
+tax int 
+);
+create table dependent50
+(
+eno int,
+name varchar(20) not null,
+relationship varchar(20) not null,
+dob date,
+primary key(eno,name)
+);
+insert into employee50 values(101,'sachin',01,'1994-12-12','delhi',9898989898),(102,'dravid',02,'1994-12-11','kanpur',8787878787),(103,'ganguly',03,'1994-12-10','meerut',7878787878),(104,'yuvraj',04,'1994-12-09','bihar',6767676767);
+insert into department50 values(01,'abc','ABC'),(02,'xyz','XYZ'),(03,'prq','PQR'),(04,'mno','MNO');
+insert into salary50 values(201,10000,01,1000),(202,20000,02,2000),(203,30000,03,3000),(204,40000,04,4000);
+insert into dependent50 values(201,'john','son','1996-10-05'),(202,'rita','daughter','1999-05-06'),(203,'jim','spouse','1999-05-07'),(204,'candy','sister','1999-09-06');
+1.select name,city from employee50 where deptno IN(select deptno from department50 where dname='prq' );
+3.select name from employee50 order by name;
+   select name from employee order by name desc;
+7.select name,min(dob) from employee50;
+8.select *from employee50 where deptno in(select deptno from salary50 where basic=(select max(basic) from salary50 where basic NOT IN (select max(basic) from salary50))) ;
+6.select *from employee50 where deptno IN(select deptno from salary50 where tax IN(select max(tax) from salary50));
+5.select sum(basic) from salary50 where eno in(select empno from employee50 where city='delhi');
+2.  select name,dname from employee50,department50,salary50 where salary50.basic >10000 and department50.deptno=employee50.empno and employee50.empno=salary50.eno;
+4. update employee50 set city='delhi' where empno=102;
+9.  select *from employee50 where deptno IN(select deptno from salary50 where basic =(select basic from salary50 order by basic desc limit 3,4));
